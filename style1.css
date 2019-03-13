@@ -1,0 +1,39 @@
+#editor{
+    margin: 5% auto;   
+}
+.ad-cards{
+    margin: 5% auto;
+}
+
+.ad-img{
+    
+    width: 25%;
+    height: 25%;
+}
+
+#footer{
+    
+    background-color: darkgrey;
+    padding:7% 15%;
+    text-align: center;
+    margin-top: 10%;
+}
+
+.social-icon{
+    margin: 20px 10px;
+    cursor: pointer;
+}
+
+#add_book,#rem_book,#rd_name,#edit_book,#rd_author,#rd_des,#rd_cover{
+    display: block;
+    display: none;
+    
+}
+
+.add_form{
+        margin: 5%;
+     }
+
+.nav-mar{
+    margin-bottom: 100px;
+}
