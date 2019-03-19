@@ -1,3 +1,25 @@
+<?php
+$flag = 0;
+session_start();
+if(isset($_SESSION['uname']) && !empty($_SESSION['uname'])){
+  $flag=1;
+  if ($_SESSION['uname']=="admin@admin.com") {
+    $ImageName = "king";
+  }
+  else{
+    $ImageName = $_SESSION['uname'][0];
+  }
+}/*
+if(isset($_POST['user'])){
+
+  else {
+   // $flag=3;
+    echo '<script>alert("Please Sign up first..");</script>';
+    //echo 'Plzz SignUp...';
+}
+}*/
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +37,7 @@
   <script type="text/javascript" src="includes/js/bootstrap.min.js"></script>
 
   <style>
+      
      .navbar {
         background-color: transparent;
     }
@@ -72,11 +95,27 @@
                   Categories
                 </a>
                 <div class="dropdown-menu drop1" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item rounded text-white effect" href="#">Fiction</a>
-                  <a class="dropdown-item rounded text-white effect" href="#">Business</a>
-                  <a class="dropdown-item rounded text-white effect" href="#">Love Story</a>
-                  <a class="dropdown-item rounded text-white effect" href="#">Inspiratioal</a>
+                  <a class="dropdown-item rounded text-white effect cl" href="">Fiction</a>
+                  <a class="dropdown-item rounded text-white effect cl" href="">Business</a>
+                  <a class="dropdown-item rounded text-white effect cl" href="">Love Story</a>
+                  <a class="dropdown-item rounded text-white effect cl" href="">Inspiratioal</a>
                 </div> 
+                <script>
+                      $('.cl').click(function(e) {
+                      e.preventDefault();
+                      var t = $(this).text();
+                      $('#book_cat').html(t);
+                      $("#trig_btn").trigger('click');
+
+                      $("#carouselExampleControls").fadeOut(1000);
+                      $(".card").fadeOut(1000);
+                      $("#recomend_book").fadeOut(1000);
+                      $("#book_page").fadeOut(1000);
+                      $("#book_page").delay(1000).fadeIn();
+      
+                  });
+                  
+                </script>
               </li>
               <li class="nav-item">
                 <a class="nav-link waves-effect waves-light" href="#">Contact Us</a>
@@ -85,11 +124,36 @@
                 <a class="nav-link waves-effect waves-light" href="#">About</a>
               </li>
               </ul>
+              <?php 
+                if ($flag==1) {
+                  echo '<ul class="navbar-nav nav-flex-icons">
+                <li class="nav-item">
+                  <img src="login_image/'.$ImageName.'.png" alt="Avatar" style="border-radius: 50%;width: 40px;height: 40px;">
+                </li>
+              <li class="nav-item">
+                  <button class="btn rounded btn-sm blue-gradient waves-effect waves-dark" id="mySign_out_id">Sign Out</button>
+            
+                </li>
+              </ul>';
+                }
+                else{
+                  echo '<div id="modal_btn_h">
               <ul class="navbar-nav nav-flex-icons">
                 <li class="nav-item">
-                  <button type='button' class="btn rounded btn-sm blue-gradient  waves-effect waves-dark" data-toggle="modal" data-target="#modalLRForm">Log In/Sign Up</button>
+                  <button class="btn rounded btn-sm blue-gradient waves-effect waves-dark" data-toggle="modal" data-target="#modalLRForm">Log In/Sign Up</button>
                 </li>
               </ul>
+            </div>';
+                }
+              ?>
+                  <script>
+              $("#mySign_out_id").click(function(){
+
+               
+               url = "logOut.php";
+               window.location= url;
+              });
+            </script>
             </div>
           </nav>
           <br>
@@ -122,6 +186,7 @@
             <!--Body-->
             <div class="modal-body mb-1">
               <form method="post" action="login.php">
+                <h6 id="reg_msg" style="color: red;visibility: hidden;">Please Register First!!</h6>
               <div class="md-form form-sm mb-5">
                 <i class="fa fa-envelope prefix"></i>
                 <input type="email" id="modalLRInput10" name="user" class="form-control form-control-sm validate">
@@ -130,11 +195,12 @@
 
               <div class="md-form form-sm mb-4">
                 <i class="fa fa-lock prefix"></i>
-                <input type="password" id="modalLRInput11" name="pass" class="form-control form-control-sm validate">
+                <input type="password" id="modalLRInput11" name="password" class="form-control form-control-sm validate">
                 <label data-error="wrong" data-success="right" for="modalLRInput11">Your password</label>
-              </div>
+              </div> 
               <div class="text-center mt-2">
                 <button class="btn btn-info">Log in <i class="fa fa-sign-in ml-1"></i></button>
+               
               </div>
             </form>
             </div>
@@ -201,15 +267,39 @@
 </div>
           <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
-              <div class="carousel-item active">
-                <img class="d-block w-100" src="1.jpg" alt="First slide">
-              </div>
-              <div class="carousel-item">
-                <img class="d-block w-100" src="1.jpg" alt="Second slide">
-              </div>
-              <div class="carousel-item">
-                <img class="d-block w-100" src="1.jpg" alt="Third slide">
-              </div>
+             <?php
+             include 'connection.php';
+             $sql = "SELECT image_name FROM carosel";
+                  $result = mysqli_query($conn, $sql);
+                   $close = 0;
+
+                  if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+                  while(($row = mysqli_fetch_assoc($result))) {
+
+                      if($close==0)
+                      {
+                      echo '<div class="carousel-item active">
+                <img class="d-block w-100" src="'.$row["image_name"].'" alt="First slide">
+              </div>';
+              $close=1;
+              }
+              else{
+                 echo '<div class="carousel-item">
+                <img class="d-block w-100" src="'.$row["image_name"].'" alt="First slide">
+              </div>';
+              }
+                   }
+                  } else {
+                      echo "0 results";
+                  }
+
+             
+                 mysqli_close($conn);
+
+
+              
+             ?>
             </div>
             <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -220,22 +310,23 @@
               <span class="sr-only">Next</span>
             </a>
           </div>
-          <div class="card-deck my-5 mx-5" style="margin-left: 0px;margin-right: 0px;text-align: center;">
-            <div class="card h-75 no-shadow">
+
+          <div class="card-deck my-5 mx-5" style="text-align: center;">
+            <div class="card no-shadow">
               <i class="fas fa-user fa-5x mx-auto mt-5"></i>
               <div class="card-body">
                 <h5 class="card-title"></h5>
                 <p class="card-text">First, Rigister or login to our site</p>
               </div>
             </div>
-            <div class="card h-75 no-shadow">
+            <div class="card no-shadow">
               <i class="fas fa-heart fa-5x mx-auto mt-5"></i>
               <div class="card-body">
                 <h5 class="card-title"></h5>
                 <p class="card-text">Select your interest!</p>
               </div>
             </div>
-            <div class="card h-75 no-shadow">
+            <div class="card no-shadow">
               <i class="fas fa-download fa-5x mx-auto mt-5"></i>
               <div class="card-body">
                 <h5 class="card-title"></h5>
@@ -243,35 +334,90 @@
               </div>
             </div>
           </div>
-          <div class="container">
+          <div class="container" id="recomend_book">
             <div class="row">
               <?php
-                for($counter=1;$counter<=4;$counter++)
-                {
-                  ?>
-                  <div class="col-lg-3 col-md-4 col-sm-6 col-4 tooltip1">
+              include ('connection.php');
+               
+                  $count = 4;
+                  $sql = "SELECT book_name, detail, image FROM add_book";
+                  $result = mysqli_query($conn, $sql);
+
+                  if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+                  while(($row = mysqli_fetch_assoc($result)) /*&& $count > 0*/) {
+                    // echo $row["detail"];
+                
+              // $count--;
+                  
+                 echo '<div class="col-lg-3 col-md-4 col-sm-6 col-4 tooltip1">
                       <div class="right">
-                      <h3>Lorem Ipsum</h3>
-                      <img src="book.png" style="height: 100px;width: 70px;">
-                      <p>What is Lorem Ipsum?
-                }
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-</p>
+                      <h3>'.$row["book_name"].'</h3>
+                      <img src="'.$row["image"].'" style="height: 100px;width: 70px;">
+                      <p>'.$row["detail"].'</p>
                       <i></i>
                       </div>
+                      
                      
                     <div style="text-align:center;">
-                        <img src="book.png" class="book-image" alt="">
-                        <h4>Book</h4>                       
+                        <img src="'.$row["image"].'" class="book-image" alt="">
+                        <h4>'.$row["book_name"].'</h4>                       
                       </div>
                      
-                  </div>
-                  <?php
-                }
+                  </div>';
+                   }
+                  } else {
+                      echo "0 results";
+                  }
+
+             
+                 mysqli_close($conn);
                 ?>
                  
             
             </div>
+          </div>
+
+          <div id="book_page" style="display: none;">
+            <div id="book_cat" style="font-size: 30px;"></div>
+            <button id="trig_btn" hidden></button>
+           
+            <div class="container">
+              <div class="row">
+                 <?php
+              include ('connection.php');
+                  $book_category =$_POST["book_category"];                    
+                  echo $sql = "SELECT book_name, detail, image FROM add_book where category='".$book_category."'";
+                  /*$result = mysqli_query($conn, $sql);
+
+                  if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+                  while($row = mysqli_fetch_assoc($result)) {
+
+                 echo '<div class="col-lg-3 col-md-4 col-sm-6 col-4 tooltip1">
+                      <div class="right">
+                      <h3>'.$row["book_name"].'</h3>
+                      <img src="'.$row["image"].'" style="height: 100px;width: 70px;">
+                      <p>'.$row["detail"].'</p>
+                      <i></i>
+                      </div>
+                      
+                    <div style="text-align:center;">
+                        <img src="'.$row["image"].'" class="book-image" alt="">
+                        <h4>'.$row["book_name"].'</h4>                       
+                      </div>
+                     
+                  </div>';
+                   }
+                  } else {
+                      echo "0 results";
+                  }
+                 mysqli_close($conn);*/ 
+                ?>
+              </div>
+              
+            </div>
+            
           </div>
     
              <!--/.Footer-->

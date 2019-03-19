@@ -1,3 +1,10 @@
+<?php
+  session_start();
+  if($_SESSION['uname']!="admin@admin.com"){
+    header("Location: index.php");
+  }
+?>
+
 <html lang="en">
 <head>
   <title>AudBud</title>
@@ -26,6 +33,7 @@
     
     </head>
 <body>
+  
     <div class="nav-mar">
       <nav class="navbar fixed-top navbar-expand-lg navbar-dark nav-color">
         <a class="navbar-brand font-weight-bold font-italic text-white " href="#">AudBud</a>
@@ -35,13 +43,13 @@
           <div class="collapse navbar-collapse"id="navbarNav">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link waves-effect waves-light" href="#">Home</a>
+                <a class="nav-link waves-effect waves-light" href="index.php" id="home_btn">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link waves-effect waves-light" href="#">Category</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link waves-effect waves-light" href="#">Contact Us</a>
+                <a class="nav-link waves-effect waves-light" href="#footer">Contact Us</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link waves-effect waves-light" href="#">About</a>
@@ -49,16 +57,24 @@
               </ul>
               <ul class="navbar-nav nav-flex-icons">
                 <li class="nav-item">
-                  <button type='button' class="btn rounded btn-sm blue-gradient  waves-effect waves-dark">Image</button>
+                  <img src="login_image/king.png" alt="Avatar" style="border-radius: 50%;width: 40px;height: 40px;">
                 </li>
+                <!--<li class="nav-item">
+                  <button class="btn rounded btn-sm blue-gradient waves-effect waves-dark" disabled>Admin</button>
+                </li>-->
                 <li class="nav-item">
-                  <button class="btn rounded btn-sm blue-gradient  waves-effect waves-dark" disabled>User Name</button>
+                  <button class="btn rounded btn-sm blue-gradient waves-effect waves-dark" id="mySign_out_id">Sign Out</button>
                 </li>
               </ul>
             </div>
           </nav>
     </div>
-    
+    <script>
+      $("#mySign_out_id").click(function() {
+        url ="logOut.php";
+        window.location= url;
+      });
+    </script>
     
             <div class="container" id="editor">
                 <div class="row">
@@ -128,27 +144,46 @@
                 <div class="add_form">
             <div id="add_book">
                 
-                <form style="width:100%;">
+                <form style="width:100%;" enctype="multipart/form-data" action="add_book1.php" method="Post">
                   <p class="text-center form-text font-weight-bold h1">Add Book</p>
+                  <div class="form-group font-weight-bold">
+                        <label for="formGroupExampleInput2">Category</label>
+                        <select name="book_category" class="form-control" id="category_bar">
+                          <option value="select">Select Category...</option>
+                          <option value="fiction">Fiction</option>
+                          <option value="business">Business</option>
+                          <option value="loveStory">Love Story</option>
+                          <option value="inspirational">Inspirational</option>
+                        </select>
+                    </div>
                     <div class="form-group font-weight-bold">
                         <label for="formGroupExampleInput">Enter Book Name</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput" placeholder="eg. Think and Grow">
+                        <input type="text" class="form-control" id="formGroupExampleInput" name="book_name" placeholder="eg. Think and Grow">
                     </div>
                     <div class="form-group font-weight-bold">
                         <label for="formGroupExampleInput2">Author</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="eg. Carol Dwick">
+                        <input type="text" class="form-control" id="formGroupExampleInput2" name="author_name" placeholder="eg. Carol Dwick">
                     </div>
                     <div class="form-group font-weight-bold">
                         <label for="formGroupExampleInput2">Enter Link of Diverting Page</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="eg. http://xyz.com">
+                        <input type="text" class="form-control" id="formGroupExampleInput2" name="link" placeholder="eg. http://xyz.com">
                     </div>
                    <div class="form-group font-weight-bold">
                         <label for="formGroupExampleInput2">Detail of Book</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="eg. Carol Dwick">
+                        <textarea rows="4" class="form-control" id="formGroupExampleInput2" name="detail" placeholder="eg. Carol Dwick"></textarea>
+                    </div>
+                    <div class="form-group font-weight-bold">
+                        <label for="formGroupExampleInput2">Cover / Carosel</label>
+                        <select name="image_selector" class="form-control" id="image_selector">
+                          <option value="select">Select Cover/ Carosel...</option>
+                          <option value="cover">Cover</option>
+                          <option value="carosel">Carosel</option>
+                        </select>
                     </div>
                     <div class="form-group font-weight-bold">
                         <label for="exampleFormControlFile1">Select Cover Page</label>
-                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                        <input type="file" class="form-control-file form-control" name="coverImage" id="file_select">
+                       
                     </div>
                     <button type="submit" class="btn btn-primary" id="add_book2">Add Book</button>
                     <script>
@@ -166,15 +201,15 @@
        <div class="add_form">
             <div id="rem_book">
                 
-                <form style="width:100%;">
+                <form style="width:100%;" action="delete.php" method="Post">
                   <p class="text-center form-text font-weight-bold h1">Remove Book</p>
                     <div class="form-group font-weight-bold">
                         <label for="formGroupExampleInput">Enter Book Name</label>
-                        <input type="text" class="form-control" id="book_name" placeholder="eg. Think and Grow">
+                        <input type="text" class="form-control" id="book_name" name="book_name" placeholder="eg. Think and Grow">
                     </div>
                     <div class="form-group font-weight-bold">
                         <label for="formGroupExampleInput2">Author</label>
-                        <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="eg. Carol Dwick">
+                        <input type="text" class="form-control" id="formGroupExampleInput2" name="author_name" placeholder="eg. Carol Dwick">
                     </div>
                     <button type="submit" class="btn btn-primary" id="rem_book2">Delete</button>
                     <script>
